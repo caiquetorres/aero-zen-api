@@ -1,0 +1,41 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/vaner-44ecc/vaner-api:latest', '.']
+
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/vaner-44ecc/vaner-api:latest']
+
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      [
+        'run',
+        'deploy',
+        '$_SERVICE',
+        '--image',
+        'gcr.io/vaner-44ecc/vaner-api:latest',
+        '--region',
+        'us-east1',
+        '--set-env-vars=NODE_ENV=$_NODE_ENV',
+        '--set-env-vars=AWS_ACCESS_KEY_ID=$_AWS_ACCESS_KEY_ID',
+        '--set-env-vars=AWS_REGION=$_AWS_REGION',
+        '--set-env-vars=AWS_SECRET_ACCESS_KEY=$_AWS_SECRET_ACCESS_KEY',
+        '--set-env-vars=AWS_SES_SOURCE=$_AWS_SES_SOURCE',
+        '--set-env-vars=DB_PASSWORD=$_DB_PASSWORD',
+        '--set-env-vars=DB_URL=$_DB_URL',
+        '--set-env-vars=DB_USERNAME=$_DB_USERNAME',
+        '--set-env-vars=EMAIL_CONTACT=$_EMAIL_CONTACT',
+        '--set-env-vars=JWT_EXPIRES=$_JWT_EXPIRES',
+        '--set-env-vars=JWT_SECRET=$_JWT_SECRET',
+        '--set-env-vars=PACKAGE_VERSION=$_PACKAGE_VERSION',
+        '--set-env-vars=SWAGGER_TITLE=$_SWAGGER_TITLE',
+        '--set-env-vars=SWAGGER_VERSION=$_SWAGGER_VERSION',
+        '--set-env-vars=THROTTLER_LIMIT=$_THROTTLER_LIMIT',
+        '--set-env-vars=THROTTLER_TTL=$_THROTTLER_TTL',
+      ]
+
+images:
+  - gcr.io/vaner-44ecc/vaner-api:latest

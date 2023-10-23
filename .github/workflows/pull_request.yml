@@ -1,0 +1,78 @@
+name: Test and Lint
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+
+jobs:
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run unit tests
+        run: yarn test
+
+  test_e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run e2e tests
+        run: yarn test:e2e
+        env:
+          NODE_ENV: 'test'
+          PACKAGE_VERSION: '1.0.0'
+
+          DB_USERNAME: 'root'
+          DB_PASSWORD: '123456'
+          DB_URL: 'mongodb://localhost:27017/vaner'
+
+          JWT_SECRET: puppyaid
+          JWT_EXPIRES_IN: 1d
+
+          SWAGGER_TITLE: 'vaner'
+          SWAGGER_VERSION: '1.0.0'
+          SWAGGER_TAG: '1.0.0'
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Lint
+        run: yarn lint
