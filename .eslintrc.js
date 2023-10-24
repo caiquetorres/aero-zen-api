@@ -10,8 +10,8 @@ module.exports = {
   root: true,
   env: { node: true, jest: true },
   rules: {
-    '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-function-return-type': [2],
+    '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'import-helpers/order-imports': [
       'warn',
