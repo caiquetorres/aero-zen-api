@@ -12,7 +12,7 @@ import * as functions from 'firebase-functions';
 const server = express();
 const adapter = new ExpressAdapter(server);
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
     adapter,

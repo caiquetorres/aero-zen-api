@@ -4,10 +4,10 @@ import { IsDefined, IsOptional } from 'class-validator';
 
 export class CoreEnv {
   @IsDefined()
-  NODE_ENV: string;
+  NODE_ENV!: string;
 
   @IsOptional()
-  PORT: string;
+  PORT!: string;
 
   @IsOptional()
   PACKAGE_VERSION?: string;
@@ -22,22 +22,13 @@ export class CoreEnv {
   DB_PASSWORD?: string;
 
   @IsDefined()
-  THROTTLER_TTL: number;
+  THROTTLER_TTL!: number;
 
   @IsDefined()
-  THROTTLER_LIMIT: number;
+  THROTTLER_LIMIT!: number;
 
   @IsDefined()
-  SWAGGER_TITLE: string;
-
-  @IsOptional()
-  SWAGGER_DESCRIPTION?: string;
-
-  @IsOptional()
-  SWAGGER_VERSION?: string;
-
-  @IsOptional()
-  SWAGGER_TAG?: string;
+  SWAGGER_TITLE!: string;
 }
 
 declare global {

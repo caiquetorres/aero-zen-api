@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -16,6 +18,6 @@ export class EnvService {
    * @returns the variable value.
    */
   get<T extends keyof IEnv>(key: T): IEnv[T] {
-    return this._configService.get<IEnv[T]>(key);
+    return this._configService.get<IEnv[T]>(key)!;
   }
 }

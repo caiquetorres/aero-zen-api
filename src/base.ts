@@ -7,12 +7,15 @@ import { EnvService } from './env/infra/services/env.service';
 
 import { join } from 'path';
 
+import './core/domain/classes/result';
+import './core/domain/classes/optional';
+
 /**
  * Function that creates a `Nest` application.
  *
  * @returns an object that represents the application.
  */
-export async function setupApp(app: NestExpressApplication) {
+export async function setupApp(app: NestExpressApplication): Promise<void> {
   const envService = app.get(EnvService);
   const reflector = app.get(Reflector);
 
@@ -34,7 +37,7 @@ export async function setupApp(app: NestExpressApplication) {
  * @param reflector defines an object that contains abstractions
  * responsible for dealing with the Reflect API.
  */
-function setupGuards(app: INestApplication, reflector: Reflector) {
+function setupGuards(app: INestApplication, reflector: Reflector): void {
   // app.useGlobalGuards(new JwtGuard(reflector), new RolesGuard(reflector));
 }
 
@@ -43,7 +46,7 @@ function setupGuards(app: INestApplication, reflector: Reflector) {
  *
  * @param app defines an object that represents the application instance.
  */
-function setupPipes(app: INestApplication) {
+function setupPipes(app: INestApplication): void {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -59,16 +62,12 @@ function setupPipes(app: INestApplication) {
  * @param env defines an object that represents the application environment
  * service.
  */
-function setupSwagger(app: INestApplication, env: EnvService) {
+function setupSwagger(app: INestApplication, env: EnvService): void {
   const config = new DocumentBuilder()
     .setTitle(env.get('SWAGGER_TITLE'))
-    .setDescription(env.get('SWAGGER_DESCRIPTION'))
-    .setVersion(env.get('SWAGGER_VERSION'))
-    .addTag(env.get('SWAGGER_TAG'))
-    .addBearerAuth()
-    .build();
+    .addBearerAuth();
 
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config.build());
   SwaggerModule.setup(`swagger`, app, document, {
     swaggerOptions: {
       docExpansion: 'none',
