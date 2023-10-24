@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import { Type } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 

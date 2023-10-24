@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import {
   DynamicModule,
   InternalServerErrorException,
@@ -62,7 +64,8 @@ export class EnvModule {
       if (errors.length) {
         const errorSentence = `Invalid environment variables\n- ${errors
           .map((error) => error.constraints)
-          .map((constraint) => Object.values(constraint))
+          .filter((constraint) => !!constraint)
+          .map((constraint) => Object.values(constraint!))
           .flat()
           .join('.\n- ')}`;
 
