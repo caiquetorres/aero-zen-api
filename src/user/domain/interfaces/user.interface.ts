@@ -1,7 +1,8 @@
+import { Role } from '../entities/role';
 import { Password } from '../value-objects/password';
 
 /**
- * Interface that represents a user.
+ * The user abstraction.
  */
 export interface IUser {
   /**
@@ -38,4 +39,6 @@ export interface IUser {
    * The user's password (hashed).
    */
   readonly password: Password;
+
+  readonly roles: Set<Role>;
 }

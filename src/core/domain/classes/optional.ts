@@ -45,7 +45,7 @@ export class None {
     return true;
   }
 
-  unwrap(): never {
-    throw new Error('Cannot unwrap a None value.');
+  unwrap(message?: string): never {
+    throw new Error(message ?? 'Cannot unwrap a None value.');
   }
 }

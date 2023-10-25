@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 
+import { Role } from '../../../domain/entities/role';
+
 @Schema({ collection: 'users' })
 export class UserDocument {
   _id: Types.ObjectId;
@@ -23,6 +25,9 @@ export class UserDocument {
   @Prop({ required: true })
   password: string;
 
+  @Prop({ required: true, type: [String] })
+  roles: Role[];
+
   constructor(data: {
     _id: Types.ObjectId;
     createdAt: Date;
@@ -31,6 +36,7 @@ export class UserDocument {
     email: string;
     username: string;
     password: string;
+    roles: Iterable<Role>;
   }) {
     this._id = data._id;
     this.createdAt = data.createdAt;
@@ -40,6 +46,7 @@ export class UserDocument {
     this.username = data.username;
     this.email = data.email;
     this.password = data.password;
+    this.roles = [...data.roles];
   }
 }
 

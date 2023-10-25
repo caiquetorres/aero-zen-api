@@ -5,6 +5,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { EnvService } from './env/infra/services/env.service';
 
+import { JwtGuard } from './auth/presentation/guards/jwt/jwt.guard';
+import { RolesGuard } from './auth/presentation/guards/roles/roles.guard';
+
 import { join } from 'path';
 
 import './core/domain/classes/result';
@@ -38,7 +41,7 @@ export async function setupApp(app: NestExpressApplication): Promise<void> {
  * responsible for dealing with the Reflect API.
  */
 function setupGuards(app: INestApplication, reflector: Reflector): void {
-  // app.useGlobalGuards(new JwtGuard(reflector), new RolesGuard(reflector));
+  app.useGlobalGuards(new JwtGuard(reflector), new RolesGuard(reflector));
 }
 
 /**

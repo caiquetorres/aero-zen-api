@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 declare global {
-  type Result<T, E = Error> = Ok<T> | Err<E>;
+  type Result<T, E extends Error = Error> = Ok<T> | Err<E>;
 
   function ok<T>(value: T): Ok<T>;
 
-  function err<E>(error: E): Err<E>;
+  function err<E extends Error = Error>(error: E): Err<E>;
 }
 
 global.ok = function <T>(value: T): Ok<T> {
   return new Ok(value);
 };
 
-global.err = function <E>(error: E): Err<E> {
+global.err = function <E extends Error = Error>(error: E): Err<E> {
   return new Err(error);
 };
 
@@ -34,7 +34,7 @@ export class Ok<T> {
   }
 }
 
-export class Err<E> {
+export class Err<E extends Error = Error> {
   constructor(readonly error: E) {
     Object.freeze(this);
   }

@@ -26,6 +26,7 @@ export class UserMongooseMapper {
       email: doc.email,
       username: doc.username,
       password: new Password(doc.password),
+      roles: doc.roles,
     });
   }
 
@@ -50,6 +51,7 @@ export class UserMongooseMapper {
       email: domain.email,
       username: domain.username,
       password: domain.password.value,
+      roles: domain.roles,
     });
   }
 }

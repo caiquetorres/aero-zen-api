@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectModel, InjectConnection } from '@nestjs/mongoose';
-import { Model, Connection } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 
 import { User } from '../../../domain/entities/user';
 import { IUser } from '../../../domain/interfaces/user.interface';
@@ -18,8 +18,6 @@ export class UserMongooseRepository implements UserRepository {
   constructor(
     @InjectModel(UserDocument.name)
     private readonly _model: Model<UserDocument>,
-    @InjectConnection()
-    private readonly _connection: Connection,
   ) {}
 
   /**
@@ -77,5 +75,33 @@ export class UserMongooseRepository implements UserRepository {
       const domain = UserMongooseMapper.toDomain(document);
       return domain ? some(domain) : none();
     });
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async findOneById(id: string | Types.ObjectId): Promise<Optional<User>> {
+    // REVIEW: Should we verify if the username is valid?
+    return this._model.findById(id).then((document) => {
+      const domain = UserMongooseMapper.toDomain(document);
+      return domain ? some(domain) : none();
+    });
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async findOneByEmailOrUsername(
+    emailOrUsername: string,
+  ): Promise<Optional<User>> {
+    // REVIEW: Should we verify if the username is valid?
+    return this._model
+      .findOne({
+        $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
+      })
+      .then((document) => {
+        const domain = UserMongooseMapper.toDomain(document);
+        return domain ? some(domain) : none();
+      });
   }
 }
