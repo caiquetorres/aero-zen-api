@@ -44,7 +44,7 @@ export class User implements IUser {
   readonly roles: Set<Role>;
 
   constructor(user: {
-    id?: string;
+    id?: Optional<string>;
     createdAt?: Date;
     updatedAt?: Date;
     name: string;
@@ -53,7 +53,7 @@ export class User implements IUser {
     password: Password;
     roles?: Iterable<Role>;
   }) {
-    this.id = user.id ? some(user.id) : none();
+    this.id = user.id ?? none();
     this.createdAt = user.createdAt ?? new Date();
     this.updatedAt = user.updatedAt ?? new Date();
     this.name = user.name;

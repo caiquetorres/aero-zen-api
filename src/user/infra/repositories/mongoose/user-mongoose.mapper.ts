@@ -19,7 +19,7 @@ export class UserMongooseMapper {
     }
 
     return new User({
-      id: doc._id.toString(),
+      id: some(doc._id.toString()),
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
       name: doc.name,

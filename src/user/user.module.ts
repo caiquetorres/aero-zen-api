@@ -5,10 +5,14 @@ import { UserInfraModule } from './infra/user-infra.module';
 
 import { CreateUserHandler } from './application/handlers/create-user.handler';
 import { GetMeQueryHandler as GetMeHandler } from './application/handlers/get-me.handler';
+import { UpdateMeHandler } from './application/handlers/update-me.handler';
 
 import { UserController } from './presentation/controllers/user.controller';
 
-const commandHandlers: Type<ICommandHandler<any>>[] = [CreateUserHandler];
+const commandHandlers: Type<ICommandHandler<any>>[] = [
+  CreateUserHandler,
+  UpdateMeHandler,
+];
 const queryHandlers: Type<IQueryHandler<any>>[] = [GetMeHandler];
 
 @Module({

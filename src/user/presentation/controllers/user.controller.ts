@@ -1,8 +1,21 @@
-import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CreateUserCommand } from '../../domain/commands/create-user.command';
+import { UpdateMeCommand } from '../../domain/commands/update-me.command';
 import { IUser } from '../../domain/interfaces/user.interface';
 import { GetMeQuery } from '../../domain/queries/get-me.query';
 
@@ -11,6 +24,7 @@ import { CurrentUser } from '../../../auth/presentation/decorators/current-user.
 import { Public } from '../../../auth/presentation/decorators/public.decorator';
 
 import { CreateUserDto } from '../dtos/create-user.dto';
+import { UpdateMeDto } from '../dtos/update-me.dto';
 import { UserPresenter } from '../presenters/user.presenter';
 
 @ApiTags('users')
@@ -48,6 +62,25 @@ export class UserController {
     return this._queryBus
       .execute<GetMeQuery, Result<IUser, HttpException>>(
         new GetMeQuery({ currentUser }),
+      )
+      .then((result) =>
+        result.isOk()
+          ? new UserPresenter(result.value)
+          : Promise.reject(result.error),
+      );
+  }
+
+  @ApiOperation({ summary: 'Updates a single user' })
+  @ApiOkResponse({ type: UserPresenter })
+  @AllowFor(/.*/)
+  @Patch('me')
+  async updateMe(
+    @CurrentUser() currentUser: IUser,
+    @Body() dto: UpdateMeDto,
+  ): Promise<UserPresenter> {
+    return this._commandBus
+      .execute<UpdateMeCommand, Result<IUser, HttpException>>(
+        new UpdateMeCommand({ currentUser, data: dto }),
       )
       .then((result) =>
         result.isOk()
