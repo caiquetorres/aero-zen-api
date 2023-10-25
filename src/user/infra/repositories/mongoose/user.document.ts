@@ -51,3 +51,4 @@ export class UserDocument {
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDocument);
+UserSchema.index({ email: 1, username: 1 });
