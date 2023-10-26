@@ -18,7 +18,6 @@ async function bootstrap(): Promise<void> {
     adapter,
   );
   await setupApp(app);
-
   await app.init();
 }
 bootstrap();

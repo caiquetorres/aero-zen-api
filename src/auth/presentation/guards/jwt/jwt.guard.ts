@@ -1,74 +1,78 @@
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtService } from '@nestjs/jwt';
 
 import { Role } from '../../../../user/domain/entities/role';
 import { User } from '../../../../user/domain/entities/user';
-import { IUser } from '../../../../user/domain/interfaces/user.interface';
 import { Password } from '../../../../user/domain/value-objects/password';
+import { InvalidOrMissingToken } from '../../../domain/exceptions/invalid-or-missing-token.exception';
 
+import { EnvService } from '../../../../env/infra/services/env.service';
+import { UserRepository } from '../../../../user/infra/repositories/user.repository';
 import { IS_PUBLIC } from '../../../infra/constants/public.constant';
 
-/**
- * Guard responsible for protecting routes using the jwt strategy.
- */
+import { Request } from 'express';
+
 @Injectable()
-export class JwtGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
-    super();
-  }
+export class JwtGuard implements CanActivate {
+  constructor(
+    private readonly _jwtService: JwtService,
+    private readonly _envService: EnvService,
+    private readonly _reflector: Reflector,
+    private readonly _userRepository: UserRepository,
+  ) {}
 
-  /**
-   * Deals with the error or the user.
-   *
-   * @param error An object that represents the current JWT error.
-   * @param user The user the is making the request.
-   * @returns the if valid.
-   */
-  handleRequest<TUser = IUser>(
-    _: null,
-    user: TUser,
-    _error: Error,
-    context: ExecutionContext,
-  ): TUser | IUser {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const token = extractTokenFromHeader(request);
 
-    if (user) {
-      return user;
-    }
+    const isPublic =
+      this._reflector.getAllAndOverride<boolean>(IS_PUBLIC, [
+        context.getHandler(),
+        context.getClass(),
+      ]) ?? false;
 
-    const token = this._getAuthorizationToken(context);
+    if (token.isNone()) {
+      if (!isPublic) {
+        throw new InvalidOrMissingToken();
+      }
 
-    if (isPublic && !token) {
-      return new User({
+      request['user'] = new User({
         name: 'Guest',
         email: 'guest@fake.com',
         username: 'guest',
         password: Password.from('guest'),
         roles: [Role.guest],
       });
+
+      return true;
     }
 
-    throw new UnauthorizedException('Invalid or missing authentication token');
-  }
+    // Here the value of "isPublic" doesn't matter because the token is going to be validated anyway.
 
-  /**
-   * Returns the authorization token.
-   *
-   * @param context The request context.
-   * @returns the authorization token.
-   */
-  private _getAuthorizationToken(context: ExecutionContext): string {
-    const token = (context.switchToHttp().getRequest() as Request).headers[
-      'authorization'
-    ];
-    return token ? token.replace('Bearer', '').trim() : '';
+    try {
+      const secret = this._envService.get('JWT_SECRET');
+      const payload: { id: { value: string } } =
+        await this._jwtService.verifyAsync(token.value, {
+          secret,
+        });
+
+      const user = await this._userRepository.findOneById(payload.id.value);
+
+      if (user.isNone()) {
+        throw new InvalidOrMissingToken();
+      }
+
+      request['user'] = user.value;
+
+      return true;
+    } catch (err) {
+      throw new InvalidOrMissingToken();
+    }
   }
+}
+
+function extractTokenFromHeader(request: Request): Optional<string> {
+  const [type, token] = request.headers.authorization?.split(' ') ?? [];
+  return type === 'Bearer' ? some(token) : none();
 }

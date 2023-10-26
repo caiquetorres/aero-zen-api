@@ -1,14 +1,8 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { TokenRepository } from './auth/infra/repositories/token.repository';
 import { EnvService } from './env/infra/services/env.service';
-
-import { JwtGuard } from './auth/presentation/guards/jwt/jwt.guard';
-import { RolesGuard } from './auth/presentation/guards/roles/roles.guard';
-import { TokenGuard } from './auth/presentation/guards/token.guard';
 
 import './core/domain/classes/result';
 import './core/domain/classes/optional';
@@ -20,28 +14,9 @@ import './core/domain/classes/optional';
  */
 export async function setupApp(app: NestExpressApplication): Promise<void> {
   setupPipes(app);
-  setupGuards(app);
   setupSwagger(app);
 
   app.enableCors();
-}
-
-/**
- * Function that setup all the application base guards.
- *
- * @param app defines an object that represents the application instance.
- * @param reflector defines an object that contains abstractions
- * responsible for dealing with the Reflect API.
- */
-function setupGuards(app: INestApplication): void {
-  const reflector = app.get(Reflector);
-  const tokenRepository = app.get(TokenRepository);
-
-  app.useGlobalGuards(
-    new TokenGuard(tokenRepository),
-    new JwtGuard(reflector),
-    new RolesGuard(reflector),
-  );
 }
 
 /**

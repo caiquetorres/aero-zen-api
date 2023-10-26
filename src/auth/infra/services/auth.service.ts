@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 import { IUser } from '../../../user/domain/interfaces/user.interface';
 import { InvalidUsernameOrPasswordException } from '../../domain/exceptions/invalid-username-or-password.exception';
-import { NoLongerValidTokenException } from '../../domain/exceptions/no-longer-valid-token.exception';
 
 import { UserRepository } from '../../../user/infra/repositories/user.repository';
 
@@ -42,18 +41,5 @@ export class AuthService {
     return passwordMatches
       ? ok(user)
       : err(new InvalidUsernameOrPasswordException());
-  }
-
-  /**
-   * Validates a user's JWT.
-   *
-   * @param id The ID of the user to validate.
-   * @returns the user if the credentials are valid, or null if they are not.
-   */
-  async validateById(id: string): Promise<Result<IUser>> {
-    const result = await this._repository.findOneById(id);
-    return result.isSome()
-      ? ok(result.value)
-      : err(new NoLongerValidTokenException());
   }
 }

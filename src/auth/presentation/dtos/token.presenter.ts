@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IToken } from '../../domain/interfaces/token.interface';
+import { IJwtToken } from '../../domain/interfaces/jwt-token.interface';
 
 /**
  * Represents a TokenDto object containing a JSON Web Token (JWT) and its
@@ -22,7 +22,7 @@ export class TokenPresenter {
   @ApiProperty({ example: '1y' })
   readonly expiresIn!: string;
 
-  constructor(partial: IToken) {
+  constructor(partial: IJwtToken) {
     this.token = partial.token;
     this.expiresIn = partial.expiresIn;
 

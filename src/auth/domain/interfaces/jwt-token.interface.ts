@@ -1,4 +1,5 @@
-export interface IToken {
+export interface IJwtToken {
   token: string;
+
   expiresIn: string;
 }

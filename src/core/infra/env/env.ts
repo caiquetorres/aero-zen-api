@@ -16,12 +16,6 @@ export class CoreEnv {
   MONGO_URL!: string;
 
   @IsDefined()
-  THROTTLER_TTL!: number;
-
-  @IsDefined()
-  THROTTLER_LIMIT!: number;
-
-  @IsDefined()
   SWAGGER_TITLE!: string;
 }
 

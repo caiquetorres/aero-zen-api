@@ -4,7 +4,7 @@ import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { IUser } from '../../../user/domain/interfaces/user.interface';
 import { LoginCommand } from '../../domain/commands/login.command';
-import { IToken } from '../../domain/interfaces/token.interface';
+import { IJwtToken } from '../../domain/interfaces/jwt-token.interface';
 
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { Public } from '../decorators/public.decorator';
@@ -43,7 +43,11 @@ export class AuthController {
   @HttpCode(200)
   async login(@CurrentUser() currentUser: IUser): Promise<TokenPresenter> {
     return this._commandBus
-      .execute<LoginCommand, IToken>(new LoginCommand(currentUser))
-      .then((token) => new TokenPresenter(token));
+      .execute<LoginCommand, Result<IJwtToken>>(new LoginCommand(currentUser))
+      .then((token) =>
+        token.isOk()
+          ? new TokenPresenter(token.value)
+          : Promise.reject(token.error),
+      );
   }
 }
