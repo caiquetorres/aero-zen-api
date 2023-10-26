@@ -49,7 +49,7 @@ jobs:
 
           DB_USERNAME: 'root'
           DB_PASSWORD: '123456'
-          DB_URL: 'mongodb://localhost:27017/vaner'
+          MONGO_URL: 'mongodb://localhost:27017/vaner'
 
           JWT_SECRET: puppyaid
           JWT_EXPIRES_IN: 1d

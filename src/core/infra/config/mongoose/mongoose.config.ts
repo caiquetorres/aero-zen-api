@@ -12,7 +12,7 @@ export class MongooseConfig implements MongooseOptionsFactory {
 
   createMongooseOptions(): MongooseModuleOptions {
     return {
-      uri: this._envService.get('DB_URL'),
+      uri: this._envService.get('MONGO_URL'),
     };
   }
 }

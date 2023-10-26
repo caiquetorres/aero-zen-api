@@ -12,14 +12,8 @@ export class CoreEnv {
   @IsOptional()
   PACKAGE_VERSION?: string;
 
-  @IsOptional()
-  DB_URL?: string;
-
-  @IsOptional()
-  DB_USERNAME?: string;
-
-  @IsOptional()
-  DB_PASSWORD?: string;
+  @IsDefined()
+  MONGO_URL!: string;
 
   @IsDefined()
   THROTTLER_TTL!: number;

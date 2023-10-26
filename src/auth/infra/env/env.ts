@@ -8,6 +8,9 @@ export class AuthEnv {
 
   @IsOptional()
   JWT_EXPIRES_IN = '1y';
+
+  @IsDefined()
+  REDIS_URL!: string;
 }
 
 declare global {

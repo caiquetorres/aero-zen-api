@@ -3,12 +3,12 @@ import { Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import { TokenRepository } from './auth/infra/repositories/token.repository';
 import { EnvService } from './env/infra/services/env.service';
 
 import { JwtGuard } from './auth/presentation/guards/jwt/jwt.guard';
 import { RolesGuard } from './auth/presentation/guards/roles/roles.guard';
-
-import { join } from 'path';
+import { TokenGuard } from './auth/presentation/guards/token.guard';
 
 import './core/domain/classes/result';
 import './core/domain/classes/optional';
@@ -19,16 +19,9 @@ import './core/domain/classes/optional';
  * @returns an object that represents the application.
  */
 export async function setupApp(app: NestExpressApplication): Promise<void> {
-  const envService = app.get(EnvService);
-  const reflector = app.get(Reflector);
-
   setupPipes(app);
-  setupGuards(app, reflector);
-  setupSwagger(app, envService);
-
-  app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.setBaseViewsDir(join(__dirname, '..', 'views'));
-  app.setViewEngine('hbs');
+  setupGuards(app);
+  setupSwagger(app);
 
   app.enableCors();
 }
@@ -40,8 +33,15 @@ export async function setupApp(app: NestExpressApplication): Promise<void> {
  * @param reflector defines an object that contains abstractions
  * responsible for dealing with the Reflect API.
  */
-function setupGuards(app: INestApplication, reflector: Reflector): void {
-  app.useGlobalGuards(new JwtGuard(reflector), new RolesGuard(reflector));
+function setupGuards(app: INestApplication): void {
+  const reflector = app.get(Reflector);
+  const tokenRepository = app.get(TokenRepository);
+
+  app.useGlobalGuards(
+    new TokenGuard(tokenRepository),
+    new JwtGuard(reflector),
+    new RolesGuard(reflector),
+  );
 }
 
 /**
@@ -65,9 +65,11 @@ function setupPipes(app: INestApplication): void {
  * @param env defines an object that represents the application environment
  * service.
  */
-function setupSwagger(app: INestApplication, env: EnvService): void {
+function setupSwagger(app: INestApplication): void {
+  const envService = app.get(EnvService);
+
   const config = new DocumentBuilder()
-    .setTitle(env.get('SWAGGER_TITLE'))
+    .setTitle(envService.get('SWAGGER_TITLE'))
     .addBearerAuth();
 
   const document = SwaggerModule.createDocument(app, config.build());
