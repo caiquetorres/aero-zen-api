@@ -7,7 +7,7 @@ export interface IPasswordResetCode {
   /**
    * The password reset code unique identifier.
    */
-  id: Optional<string>;
+  id: Option<string>;
 
   /**
    * The password reset code code.

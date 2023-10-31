@@ -9,7 +9,7 @@ declare global {
 }
 
 global.ok = function <T>(value: T): Ok<T> {
-  return new Ok(value);
+  return new Ok(value!);
 };
 
 global.err = function <E extends Error = Error>(error: E): Err<E> {

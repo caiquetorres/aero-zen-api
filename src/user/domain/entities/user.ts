@@ -1,3 +1,5 @@
+import { toOptional } from '../../../core/domain/classes/option';
+
 import { IUser } from '../interfaces/user.interface';
 import { Password } from '../value-objects/password';
 import { Role } from './role';
@@ -9,7 +11,7 @@ export class User implements IUser {
   /**
    * @inheritdoc
    */
-  readonly id: Optional<string>;
+  readonly id: Option<string>;
 
   /**
    * @inheritdoc
@@ -43,8 +45,8 @@ export class User implements IUser {
 
   readonly roles: Set<Role>;
 
-  constructor(user: {
-    id?: Optional<string>;
+  constructor(data: {
+    id?: string;
     createdAt?: Date;
     updatedAt?: Date;
     name: string;
@@ -53,14 +55,14 @@ export class User implements IUser {
     password: Password;
     roles?: Iterable<Role>;
   }) {
-    this.id = user.id ?? none();
-    this.createdAt = user.createdAt ?? new Date();
-    this.updatedAt = user.updatedAt ?? new Date();
-    this.name = user.name;
-    this.email = user.email;
-    this.username = user.username;
-    this.password = user.password;
-    this.roles = new Set(user.roles ?? [Role.user]);
+    this.id = toOptional(data.id);
+    this.createdAt = data.createdAt ?? new Date();
+    this.updatedAt = data.updatedAt ?? new Date();
+    this.name = data.name;
+    this.email = data.email;
+    this.username = data.username;
+    this.password = data.password;
+    this.roles = new Set(data.roles ?? [Role.user]);
 
     Object.freeze(this);
   }

@@ -17,7 +17,7 @@ declare global {
 }
 
 String.prototype.toTitleCase = function (): string {
-  return this.replace(/\w\S*/g, function (txt: string) {
-    return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
+  return this.replace(/\w\S*/g, function (text: string) {
+    return text.charAt(0).toUpperCase() + text.substring(1).toLowerCase();
   });
 };

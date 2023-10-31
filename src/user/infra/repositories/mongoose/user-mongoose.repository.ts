@@ -22,27 +22,30 @@ export class UserMongooseRepository implements UserRepository {
    * @inheritdoc
    */
   async save(domain: IUser): Promise<Result<User>> {
-    const result = UserMongooseMapper.toDocument(domain);
+    const document = UserMongooseMapper.toDocument(domain);
 
-    if (result.isNone()) {
+    if (document.isNone()) {
       return err(new Error('Null user domain'));
     }
 
-    const document = result.value;
-    const { _id } = document._id;
+    const { _id } = document.value._id;
 
-    await this._model.updateOne({ _id }, document, { upsert: true });
-    return this._model
-      .findById(_id)
-      .lean()
-      .then((document) => UserMongooseMapper.toDomain(document)!)
-      .then((domain) => ok(domain.unwrap()));
+    try {
+      await this._model.updateOne({ _id }, document.value, { upsert: true });
+      return this._model
+        .findById(_id)
+        .lean()
+        .then((document) => UserMongooseMapper.toDomain(document)!)
+        .then((domain) => ok(domain.unwrap()));
+    } catch (error: any) {
+      return err(error);
+    }
   }
 
   /**
    * @inheritdoc
    */
-  async findOneByEmail(email: string): Promise<Optional<User>> {
+  async findOneByEmail(email: string): Promise<Option<User>> {
     return this._model
       .findOne({ email })
       .then((document) => UserMongooseMapper.toDomain(document));
@@ -51,7 +54,7 @@ export class UserMongooseRepository implements UserRepository {
   /**
    * @inheritdoc
    */
-  async findOneByUsername(username: string): Promise<Optional<User>> {
+  async findOneByUsername(username: string): Promise<Option<User>> {
     return this._model
       .findOne({ username })
       .lean()
@@ -61,7 +64,7 @@ export class UserMongooseRepository implements UserRepository {
   /**
    * @inheritdoc
    */
-  async findOneById(id: string | Types.ObjectId): Promise<Optional<User>> {
+  async findOneById(id: string | Types.ObjectId): Promise<Option<User>> {
     return this._model
       .findById(id)
       .lean()
@@ -73,12 +76,19 @@ export class UserMongooseRepository implements UserRepository {
    */
   async findOneByEmailOrUsername(
     emailOrUsername: string,
-  ): Promise<Optional<User>> {
+  ): Promise<Option<User>> {
     return this._model
       .findOne({
         $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
       })
       .lean()
       .then((document) => UserMongooseMapper.toDomain(document));
+  }
+
+  async deleteOne(user: IUser): Promise<Result<void, Error>> {
+    return this._model
+      .deleteOne({ _id: new Types.ObjectId(user.id.unwrap()) })
+      .then(() => ok(undefined))
+      .catch((error) => err(error));
   }
 }

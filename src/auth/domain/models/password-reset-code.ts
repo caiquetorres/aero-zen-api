@@ -1,3 +1,4 @@
+import { toOptional } from '../../../core/domain/classes/option';
 import { IUser } from '../../../user/domain/interfaces/user.interface';
 
 import { IPasswordResetCode } from '../interfaces/password-reset-code.interface';
@@ -8,7 +9,7 @@ export class PasswordResetCode implements IPasswordResetCode {
   /**
    * @inheritdoc
    */
-  readonly id: Optional<string>;
+  readonly id: Option<string>;
 
   /**
    * @inheritdoc
@@ -31,8 +32,8 @@ export class PasswordResetCode implements IPasswordResetCode {
     expirationDate?: Date;
     owner: IUser;
   }) {
-    this.id = data.id ? some(data.id) : none();
-    this.code = data.code ?? _generateRandomCode();
+    this.id = toOptional(data.id);
+    this.code = data.code ?? generateRandomCode();
     this.expirationDate = data.expirationDate ?? new Date(Date.now() + HOUR);
     this.owner = data.owner;
 
@@ -45,7 +46,7 @@ export class PasswordResetCode implements IPasswordResetCode {
  *
  * @returns The generated code;
  */
-function _generateRandomCode(): string {
+function generateRandomCode(): string {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let code = '';
 

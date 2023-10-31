@@ -16,21 +16,21 @@ export abstract class UserRepository {
    *
    * @param id The user unique identifier;
    */
-  abstract findOneById(id: string | Types.ObjectId): Promise<Optional<User>>;
+  abstract findOneById(id: string | Types.ObjectId): Promise<Option<User>>;
 
   /**
    * Finds one user by its email.
    *
    * @param email The user email.
    */
-  abstract findOneByEmail(email: string): Promise<Optional<User>>;
+  abstract findOneByEmail(email: string): Promise<Option<User>>;
 
   /**
    * Finds one user by its username.
    *
    * @param username The user username.
    */
-  abstract findOneByUsername(username: string): Promise<Optional<User>>;
+  abstract findOneByUsername(username: string): Promise<Option<User>>;
 
   /**
    * Finds one user by its email or username.
@@ -39,5 +39,12 @@ export abstract class UserRepository {
    */
   abstract findOneByEmailOrUsername(
     emailOrUsername: string,
-  ): Promise<Optional<User>>;
+  ): Promise<Option<User>>;
+
+  /**
+   * Deletes a user.
+   *
+   * @param user The user that is going to be deleted.
+   */
+  abstract deleteOne(user: IUser): Promise<Result<void>>;
 }

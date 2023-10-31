@@ -25,7 +25,7 @@ export class PasswordResetCodeMongooseRepository
   async findOneByValidCode(
     code: string,
     date?: Date | undefined,
-  ): Promise<Optional<PasswordResetCode>> {
+  ): Promise<Option<PasswordResetCode>> {
     throw new Error('Method not implemented.');
   }
 

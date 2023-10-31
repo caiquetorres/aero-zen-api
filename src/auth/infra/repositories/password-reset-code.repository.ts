@@ -8,7 +8,7 @@ export abstract class PasswordResetCodeRepository {
   abstract findOneByValidCode(
     code: string,
     date?: Date,
-  ): Promise<Optional<PasswordResetCode>>;
+  ): Promise<Option<PasswordResetCode>>;
 
   abstract delete(passwordResetCode: PasswordResetCode): Promise<Result<void>>;
 }

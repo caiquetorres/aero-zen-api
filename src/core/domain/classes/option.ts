@@ -1,9 +1,13 @@
 declare global {
-  type Optional<T> = Some<T> | None;
+  type Option<T> = Some<T> | None;
 
   function some<T>(value: T): Some<T>;
 
   function none(): None;
+}
+
+export function toOptional<T>(value: T | null | undefined): Option<T> {
+  return value === null || value === undefined ? none() : some(value);
 }
 
 global.some = function <T>(value: T): Some<T> {

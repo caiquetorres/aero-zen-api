@@ -8,7 +8,7 @@ export interface IUser {
   /**
    * The user unique identifier.
    */
-  readonly id: Optional<string>;
+  readonly id: Option<string>;
 
   /**
    * The user creation date.

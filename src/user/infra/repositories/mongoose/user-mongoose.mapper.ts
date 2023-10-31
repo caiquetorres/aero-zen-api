@@ -9,14 +9,14 @@ import { UserDocument } from './user.document';
 
 @Injectable()
 export class UserMongooseMapper {
-  static toDomain(doc: UserDocument | null): Optional<User> {
+  static toDomain(doc: UserDocument | null): Option<User> {
     if (!doc) {
       return none();
     }
 
     return some(
       new User({
-        id: some(doc._id.toString()),
+        id: doc._id.toString(),
         createdAt: doc.createdAt,
         updatedAt: doc.updatedAt,
         name: doc.name,
@@ -28,7 +28,7 @@ export class UserMongooseMapper {
     );
   }
 
-  static toDocument(domain: IUser): Optional<UserDocument> {
+  static toDocument(domain: IUser): Option<UserDocument> {
     if (!domain) {
       return none();
     }

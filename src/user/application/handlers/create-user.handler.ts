@@ -10,19 +10,10 @@ import { Password } from '../../domain/value-objects/password';
 
 import { UserRepository } from '../../infra/repositories/user.repository';
 
-/**
- * Command responsible for creating new users.
- */
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
   constructor(private readonly _repository: UserRepository) {}
 
-  /**
-   * Creates a new user given the command.
-   *
-   * @param command An object that handles the current user and the new user data.
-   * @returns A result that handles the created user or an error.
-   */
   async execute(
     command: CreateUserCommand,
   ): Promise<Result<IUser, HttpException>> {
@@ -44,22 +35,21 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
       return err(new DuplicatedUserUsernameException(data.username));
     }
 
-    let user = new User({
-      name: data.name,
-      email: data.email,
-      username: data.username,
-      password: Password.from(data.password),
-    });
+    const user = await this._repository.save(
+      new User({
+        name: data.name,
+        email: data.email,
+        username: data.username,
+        password: Password.from(data.password),
+      }),
+    );
 
-    const result = await this._repository.save(user);
-
-    if (result.isErr()) {
+    if (user.isErr()) {
       return err(
         new InternalServerErrorException('Error while creating a user'),
       );
     }
 
-    user = result.value;
-    return ok(user);
+    return ok(user.value);
   }
 }

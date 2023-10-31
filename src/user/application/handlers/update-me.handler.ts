@@ -17,21 +17,18 @@ export class UpdateMeHandler
     command: UpdateMeCommand,
   ): Promise<Result<IUser, HttpException>> {
     const { currentUser, data } = command;
+    const { id, ...rest } = currentUser;
 
-    let user = new User({
-      ...currentUser,
-      ...data,
-    });
+    const user = await this._repository.save(
+      new User({ ...rest, ...data, id: id.unwrap() }),
+    );
 
-    const result = await this._repository.save(user);
-
-    if (result.isErr()) {
+    if (user.isErr()) {
       return err(
         new InternalServerErrorException('Error while updating the user'),
       );
     }
 
-    user = result.value;
-    return ok(user);
+    return ok(user.value);
   }
 }

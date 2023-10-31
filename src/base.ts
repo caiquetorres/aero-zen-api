@@ -5,7 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { EnvService } from './env/infra/services/env.service';
 
 import './core/domain/classes/result';
-import './core/domain/classes/optional';
+import './core/domain/classes/option';
 
 /**
  * Function that creates a `Nest` application.

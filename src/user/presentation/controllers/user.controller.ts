@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   Patch,
@@ -15,6 +16,7 @@ import {
 } from '@nestjs/swagger';
 
 import { CreateUserCommand } from '../../domain/commands/create-user.command';
+import { DeleteMeCommand } from '../../domain/commands/delete-me.command';
 import { UpdateMeCommand } from '../../domain/commands/update-me.command';
 import { IUser } from '../../domain/interfaces/user.interface';
 import { GetMeQuery } from '../../domain/queries/get-me.query';
@@ -35,6 +37,22 @@ export class UserController {
     private readonly _queryBus: QueryBus,
   ) {}
 
+  @ApiOperation({ summary: 'Retrieves the request user' })
+  @ApiCreatedResponse({ type: UserPresenter })
+  @AllowFor(/.*/)
+  @Get('me')
+  async getMe(@CurrentUser() currentUser: IUser): Promise<UserPresenter> {
+    return this._queryBus
+      .execute<GetMeQuery, Result<IUser, HttpException>>(
+        new GetMeQuery({ currentUser }),
+      )
+      .then((result) =>
+        result.isOk()
+          ? new UserPresenter(result.value)
+          : Promise.reject(result.error),
+      );
+  }
+
   @ApiOperation({ summary: 'Creates a new user' })
   @ApiCreatedResponse({ type: UserPresenter })
   @Public()
@@ -46,22 +64,6 @@ export class UserController {
     return this._commandBus
       .execute<CreateUserCommand, Result<IUser, HttpException>>(
         new CreateUserCommand({ currentUser, data: dto }),
-      )
-      .then((result) =>
-        result.isOk()
-          ? new UserPresenter(result.value)
-          : Promise.reject(result.error),
-      );
-  }
-
-  @ApiOperation({ summary: 'Retrieves the request user' })
-  @ApiCreatedResponse({ type: UserPresenter })
-  @AllowFor(/.*/)
-  @Get('me')
-  async getMe(@CurrentUser() currentUser: IUser): Promise<UserPresenter> {
-    return this._queryBus
-      .execute<GetMeQuery, Result<IUser, HttpException>>(
-        new GetMeQuery({ currentUser }),
       )
       .then((result) =>
         result.isOk()
@@ -86,6 +88,20 @@ export class UserController {
         result.isOk()
           ? new UserPresenter(result.value)
           : Promise.reject(result.error),
+      );
+  }
+
+  @ApiOperation({ summary: 'Deletes the current user' })
+  @ApiOkResponse()
+  @AllowFor(/.*/)
+  @Delete('me')
+  async deleteMe(@CurrentUser() currentUser: IUser): Promise<void> {
+    return this._commandBus
+      .execute<DeleteMeCommand, Result<void, HttpException>>(
+        new DeleteMeCommand({ currentUser }),
+      )
+      .then((result) =>
+        result.isOk() ? undefined : Promise.reject(result.error),
       );
   }
 }
