@@ -1,4 +1,4 @@
-import { HttpException, InternalServerErrorException } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { CreateUserCommand } from '../../domain/commands/create-user.command';
@@ -44,12 +44,10 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
       }),
     );
 
-    if (user.isErr()) {
-      return err(
-        new InternalServerErrorException('Error while creating the user'),
-      );
+    if (user.isOk()) {
+      return ok(user.value);
     }
 
-    return ok(user.value);
+    throw user.error;
   }
 }

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
+import { IPageQuery } from '../../../../core/domain/interfaces/page-query.interface';
+import { IPage } from '../../../../core/domain/interfaces/page.interface';
 import { IFlight } from '../../../domain/interfaces/flight.interface';
 import { Flight } from '../../../domain/models/flight';
 
@@ -42,6 +44,23 @@ export class FlightMongooseRepository implements FlightRepository {
       .findById(id)
       .lean()
       .then((document) => FlightMongooseMapper.toDomain(document));
+  }
+
+  async findMany(query: IPageQuery): Promise<IPage<Flight>> {
+    const { limit, page } = query;
+    const skip = (page - 1) * limit;
+    const totalCount = await this._model.countDocuments().exec();
+    const hasNextPage = skip + limit < totalCount;
+
+    const bugReports = await this._model
+      .find()
+      .skip(skip)
+      .limit(limit)
+      .then((documents) =>
+        documents.map((doc) => FlightMongooseMapper.toDomain(doc).unwrap()),
+      );
+
+    return { limit, page, hasNextPage, data: bugReports };
   }
 
   async deleteOne(user: IFlight): Promise<Result<void, Error>> {

@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  HttpException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { ForbiddenException, HttpException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { Role } from '../../../user/domain/entities/role';
@@ -38,11 +34,7 @@ export class CreateFlightHandler
       return ok(flight.value);
     }
 
-    console.error(flight.error);
-
-    return err(
-      new InternalServerErrorException('Error while creating the flight'),
-    );
+    throw flight.error;
   }
 
   private _can(currentUser: IUser): boolean {
