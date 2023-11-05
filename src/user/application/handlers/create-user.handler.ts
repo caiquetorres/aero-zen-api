@@ -46,7 +46,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
 
     if (user.isErr()) {
       return err(
-        new InternalServerErrorException('Error while creating a user'),
+        new InternalServerErrorException('Error while creating the user'),
       );
     }
 

@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
 
 import { User } from '../../../domain/entities/user';
@@ -7,7 +6,6 @@ import { Password } from '../../../domain/value-objects/password';
 
 import { UserDocument } from './user.document';
 
-@Injectable()
 export class UserMongooseMapper {
   static toDomain(doc: UserDocument | null): Option<User> {
     if (!doc) {
