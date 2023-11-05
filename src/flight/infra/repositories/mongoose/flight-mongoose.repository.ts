@@ -26,7 +26,7 @@ export class FlightMongooseRepository implements FlightRepository {
     const { _id } = document.value;
 
     try {
-      await this._model.updateOne({ _id }, document, { upsert: true });
+      await this._model.updateOne({ _id }, document.value, { upsert: true });
       return this._model
         .findById(_id)
         .lean()

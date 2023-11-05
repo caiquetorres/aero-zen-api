@@ -29,6 +29,10 @@ export interface ILayover {
 export interface IFlight {
   readonly id: Option<string>;
 
+  readonly createdAt: Date;
+
+  readonly updatedAt: Date;
+
   readonly airline: string;
 
   readonly departureTime: Date;

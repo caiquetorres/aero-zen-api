@@ -5,6 +5,7 @@ import { FlightClass } from '../../../domain/enums/flight-class.enum';
 import { SeatClass } from '../../../domain/enums/seat-class.enum';
 import { SeatStatus } from '../../../domain/enums/seat-status.enum';
 
+@Schema()
 export class AirportDocument {
   @Prop({ required: true, type: String })
   city: string;
@@ -24,6 +25,7 @@ export class AirportDocument {
 
 const AirportSchema = SchemaFactory.createForClass(AirportDocument);
 
+@Schema()
 export class SeatDocument {
   @Prop({ required: true, type: String })
   seatNumber: string;
@@ -52,6 +54,7 @@ export class SeatDocument {
 
 const SeatSchema = SchemaFactory.createForClass(SeatDocument);
 
+@Schema()
 export class LayoverDocument {
   @Prop({ required: true, type: Number })
   time: number;
@@ -74,6 +77,12 @@ const LayoverSchema = SchemaFactory.createForClass(LayoverDocument);
 @Schema({ collection: 'flights' })
 export class FlightDocument {
   _id: Types.ObjectId;
+
+  @Prop({ required: true, type: Date })
+  createdAt: Date;
+
+  @Prop({ required: true, type: Date })
+  updatedAt: Date;
 
   @Prop({ required: true, type: String })
   airline: string;
@@ -120,9 +129,11 @@ export class FlightDocument {
 
   constructor(flight: {
     id: Types.ObjectId;
+    createdAt: number | string | Date;
+    updatedAt: number | string | Date;
     airline: string;
-    departureTime: Date;
-    arrivalTime: Date;
+    departureTime: number | string | Date;
+    arrivalTime: number | string | Date;
     departureAirport: AirportDocument;
     arrivalAirport: AirportDocument;
     price: number;
@@ -131,9 +142,11 @@ export class FlightDocument {
     layovers: LayoverDocument[];
   }) {
     this._id = flight.id;
+    this.createdAt = new Date(flight.createdAt);
+    this.updatedAt = new Date(flight.updatedAt);
     this.airline = flight.airline;
-    this.departureTime = flight.departureTime;
-    this.arrivalTime = flight.arrivalTime;
+    this.departureTime = new Date(flight.departureTime);
+    this.arrivalTime = new Date(flight.arrivalTime);
     this.departureAirport = flight.departureAirport;
     this.arrivalAirport = flight.arrivalAirport;
     this.price = flight.price;

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { Role } from '../../domain/entities/role';
 import { IUser } from '../../domain/interfaces/user.interface';
 
 import { randomUUID } from 'crypto';
@@ -23,6 +24,9 @@ export class UserPresenter {
   @ApiProperty({ example: 'janedoe' })
   readonly username: string;
 
+  @ApiProperty({ example: [Role.user] })
+  readonly permissions: Role[];
+
   constructor(user: IUser) {
     this.id = user.id.unwrap();
     this.name = user.name;
@@ -30,6 +34,7 @@ export class UserPresenter {
     this.username = user.username;
     this.createdAt = user.createdAt;
     this.updatedAt = user.updatedAt;
+    this.permissions = [...user.roles];
 
     Object.freeze(this);
   }

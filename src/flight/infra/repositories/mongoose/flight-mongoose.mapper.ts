@@ -18,6 +18,8 @@ export class FlightMongooseMapper {
     return some(
       new Flight({
         id: doc._id.toString(),
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt,
         airline: doc.airline,
         departureTime: doc.departureTime,
         arrivalTime: doc.arrivalTime,
@@ -69,6 +71,8 @@ export class FlightMongooseMapper {
     return some(
       new FlightDocument({
         id,
+        createdAt: domain.createdAt,
+        updatedAt: domain.updatedAt,
         airline: domain.airline,
         departureTime: domain.departureTime,
         arrivalTime: domain.arrivalTime,

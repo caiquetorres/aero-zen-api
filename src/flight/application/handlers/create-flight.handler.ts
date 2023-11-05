@@ -38,6 +38,8 @@ export class CreateFlightHandler
       return ok(flight.value);
     }
 
+    console.error(flight.error);
+
     return err(
       new InternalServerErrorException('Error while creating the flight'),
     );

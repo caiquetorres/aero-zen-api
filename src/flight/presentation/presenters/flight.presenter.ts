@@ -71,6 +71,12 @@ export class FlightPresenter {
   @ApiProperty({ example: new Types.ObjectId() })
   readonly id: string;
 
+  @ApiProperty({ example: new Date() })
+  readonly createdAt: Date;
+
+  @ApiProperty({ example: new Date() })
+  readonly updatedAt: Date;
+
   @ApiProperty({ example: 'Azul Linhas Aéreas' })
   readonly airline: string;
 
@@ -100,6 +106,8 @@ export class FlightPresenter {
 
   constructor(flight: IFlight) {
     this.id = flight.id.unwrap();
+    this.createdAt = new Date(flight.createdAt);
+    this.updatedAt = new Date(flight.updatedAt);
     this.airline = flight.airline;
     this.departureTime = flight.departureTime;
     this.arrivalTime = flight.arrivalTime;

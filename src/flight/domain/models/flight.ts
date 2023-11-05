@@ -3,6 +3,7 @@ import { toOptional } from '../../../core/domain/classes/option';
 import { FlightClass } from '../enums/flight-class.enum';
 import { SeatClass } from '../enums/seat-class.enum';
 import { SeatStatus } from '../enums/seat-status.enum';
+import { SeatFactory } from '../factories/seat.factory';
 import {
   IAirport,
   IFlight,
@@ -66,6 +67,10 @@ export class Layover implements ILayover {
 export class Flight implements IFlight {
   readonly id: Option<string>;
 
+  readonly createdAt: Date;
+
+  readonly updatedAt: Date;
+
   readonly airline: string;
 
   readonly departureTime: Date;
@@ -86,31 +91,37 @@ export class Flight implements IFlight {
 
   constructor(flight: {
     id?: string;
+    createdAt?: number | string | Date;
+    updatedAt?: number | string | Date;
     airline: string;
     departureAirport: IAirport;
     arrivalAirport: IAirport;
-    departureTime: Date;
-    arrivalTime: Date;
+    departureTime: number | string | Date;
+    arrivalTime: number | string | Date;
     price: number;
     flightClass: FlightClass;
-    layovers: ILayover[];
+    layovers?: ILayover[];
     seats?: ISeat[];
   }) {
     this.id = toOptional(flight.id);
+    this.createdAt = flight.createdAt ? new Date(flight.createdAt) : new Date();
+    this.updatedAt = flight.updatedAt ? new Date(flight.updatedAt) : new Date();
     this.airline = flight.airline;
-    this.departureTime = flight.departureTime;
-    this.arrivalTime = flight.arrivalTime;
+    this.departureTime = new Date(flight.departureTime);
+    this.arrivalTime = new Date(flight.arrivalTime);
     this.departureAirport = new Airport(flight.departureAirport);
     this.arrivalAirport = new Airport(flight.arrivalAirport);
     this.price = flight.price;
     this.flightClass = flight.flightClass;
-    this.seats = flight.seats ?? createSeats(20, 6);
-    this.layovers = flight.layovers.map((layover) => new Layover(layover));
+
+    this.layovers = flight.layovers
+      ? flight.layovers.map((layover) => new Layover(layover))
+      : [];
+
+    this.seats = flight.seats
+      ? flight.seats.map((seat) => new Seat(seat))
+      : new SeatFactory().create(20, 6);
 
     Object.freeze(this);
   }
-}
-
-function createSeats(rows: number, seatsPerRow: number): Seat[] {
-  return [];
 }

@@ -1,6 +1,4 @@
 import { FlightClass } from '../../domain/enums/flight-class.enum';
-import { SeatClass } from '../../domain/enums/seat-class.enum';
-import { SeatStatus } from '../../domain/enums/seat-status.enum';
 
 export interface ICreateAirport {
   city: string;
@@ -16,22 +14,12 @@ export interface ICreateLayover {
   time: number;
 }
 
-export interface ICreateSeat {
-  seatNumber: string;
-
-  seatClass: SeatClass;
-
-  status: SeatStatus;
-
-  price: number;
-}
-
 export interface ICreateFlight {
   airline: string;
 
-  departureTime: Date;
+  departureTime: string;
 
-  arrivalTime: Date;
+  arrivalTime: string;
 
   departureAirport: ICreateAirport;
 
@@ -40,8 +28,6 @@ export interface ICreateFlight {
   price: number;
 
   flightClass: FlightClass;
-
-  seats: ICreateSeat[];
 
   layovers: ICreateLayover[];
 }

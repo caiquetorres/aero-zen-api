@@ -47,8 +47,8 @@ export class User implements IUser {
 
   constructor(data: {
     id?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    createdAt?: number | string | Date;
+    updatedAt?: number | string | Date;
     name: string;
     email: string;
     username: string;
@@ -56,8 +56,8 @@ export class User implements IUser {
     roles?: Iterable<Role>;
   }) {
     this.id = toOptional(data.id);
-    this.createdAt = data.createdAt ?? new Date();
-    this.updatedAt = data.updatedAt ?? new Date();
+    this.createdAt = data.createdAt ? new Date(data.createdAt) : new Date();
+    this.updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
     this.name = data.name;
     this.email = data.email;
     this.username = data.username;
