@@ -26,7 +26,7 @@ export class UserMongooseMapper {
     );
   }
 
-  static toDocument(domain: IUser): Option<UserDocument> {
+  static toDocument(domain: IUser | null): Option<UserDocument> {
     if (!domain) {
       return none();
     }

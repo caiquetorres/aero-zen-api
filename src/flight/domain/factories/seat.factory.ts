@@ -1,5 +1,4 @@
 import { SeatClass } from '../enums/seat-class.enum';
-import { SeatStatus } from '../enums/seat-status.enum';
 import { Seat } from '../models/flight';
 
 export class SeatFactory {
@@ -13,7 +12,6 @@ export class SeatFactory {
             seatNumber: `${row}${String.fromCharCode(65 + column - 1)}`,
             price: 0,
             seatClass: SeatClass.economy,
-            status: SeatStatus.available,
           }),
         );
       }

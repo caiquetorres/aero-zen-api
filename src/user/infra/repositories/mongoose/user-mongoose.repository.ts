@@ -85,9 +85,9 @@ export class UserMongooseRepository implements UserRepository {
       .then((document) => UserMongooseMapper.toDomain(document));
   }
 
-  async deleteOne(user: IUser): Promise<Result<void, Error>> {
+  async deleteOne(domain: IUser): Promise<Result<void, Error>> {
     return this._model
-      .deleteOne({ _id: new Types.ObjectId(user.id.unwrap()) })
+      .deleteOne({ _id: new Types.ObjectId(domain.id.unwrap()) })
       .then(() => ok(undefined))
       .catch((error) => err(error));
   }

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { FlightClass } from '../../domain/enums/flight-class.enum';
 import {
   ICreateAirport,
   ICreateLayover,
@@ -11,7 +10,6 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDateString,
-  IsEnum,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -69,16 +67,6 @@ export class CreateFlightDto implements ICreateFlight {
   @ValidateNested()
   @Type(() => CreateAirportDto)
   arrivalAirport!: CreateAirportDto;
-
-  @ApiProperty({ example: 1500 })
-  @IsInt({ message: 'Price must be greater than or equal to 0' })
-  price!: number;
-
-  @ApiProperty({ example: FlightClass.economy })
-  @IsEnum(FlightClass, {
-    message: 'Flight class must be one of: economy, business, first_class',
-  })
-  flightClass!: Wrapper<FlightClass>;
 
   @ApiProperty({ type: CreateLayoverDto, isArray: true })
   @IsOptional()

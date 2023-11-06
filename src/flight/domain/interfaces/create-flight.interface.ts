@@ -1,5 +1,3 @@
-import { FlightClass } from '../../domain/enums/flight-class.enum';
-
 export interface ICreateAirport {
   city: string;
 
@@ -24,10 +22,6 @@ export interface ICreateFlight {
   departureAirport: ICreateAirport;
 
   arrivalAirport: ICreateAirport;
-
-  price: number;
-
-  flightClass: FlightClass;
 
   layovers: ICreateLayover[];
 }

@@ -1,9 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 
-import { FlightClass } from '../../domain/enums/flight-class.enum';
 import { SeatClass } from '../../domain/enums/seat-class.enum';
-import { SeatStatus } from '../../domain/enums/seat-status.enum';
 import {
   IAirport,
   IFlight,
@@ -18,14 +16,10 @@ export class SeatPresenter {
   @ApiProperty({ example: SeatClass.economy })
   readonly seatClass: Wrapper<SeatClass>;
 
-  @ApiProperty({ example: SeatStatus.available })
-  readonly status: Wrapper<SeatStatus>;
-
   @ApiProperty({ example: 1500 })
   readonly price: number;
 
   constructor(seat: ISeat) {
-    this.status = seat.status;
     this.seatClass = seat.seatClass;
     this.seatNumber = seat.seatNumber;
     this.price = seat.price;
@@ -92,12 +86,6 @@ export class FlightPresenter {
   @ApiProperty({ type: AirportPresenter })
   readonly arrivalAirport: AirportPresenter;
 
-  @ApiProperty({ example: 1500 })
-  readonly price: number;
-
-  @ApiProperty({ example: FlightClass.economy })
-  readonly flightClass: Wrapper<FlightClass>;
-
   @ApiProperty({ type: SeatPresenter, isArray: true })
   readonly seats: SeatPresenter[];
 
@@ -113,8 +101,6 @@ export class FlightPresenter {
     this.arrivalTime = flight.arrivalTime;
     this.departureAirport = new AirportPresenter(flight.departureAirport);
     this.arrivalAirport = new AirportPresenter(flight.arrivalAirport);
-    this.price = flight.price;
-    this.flightClass = flight.flightClass;
     this.seats = flight.seats.map((seat) => new SeatPresenter(seat));
     this.layovers = flight.layovers.map(
       (layover) => new LayoverPresenter(layover),

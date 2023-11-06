@@ -1,8 +1,6 @@
 import { toOptional } from '../../../core/domain/classes/option';
 
-import { FlightClass } from '../enums/flight-class.enum';
 import { SeatClass } from '../enums/seat-class.enum';
-import { SeatStatus } from '../enums/seat-status.enum';
 import { SeatFactory } from '../factories/seat.factory';
 import {
   IAirport,
@@ -16,17 +14,13 @@ export class Seat implements ISeat {
 
   readonly seatClass: SeatClass;
 
-  readonly status: SeatStatus;
-
   readonly price: number;
 
   constructor(seat: {
-    status: SeatStatus;
     seatClass: SeatClass;
     price: number;
     seatNumber: string;
   }) {
-    this.status = seat.status;
     this.seatClass = seat.seatClass;
     this.seatNumber = seat.seatNumber;
     this.price = seat.price;
@@ -81,10 +75,6 @@ export class Flight implements IFlight {
 
   readonly arrivalAirport: Airport;
 
-  readonly price: number;
-
-  readonly flightClass: FlightClass;
-
   readonly seats: Seat[];
 
   readonly layovers: Layover[];
@@ -98,8 +88,6 @@ export class Flight implements IFlight {
     arrivalAirport: IAirport;
     departureTime: number | string | Date;
     arrivalTime: number | string | Date;
-    price: number;
-    flightClass: FlightClass;
     layovers?: ILayover[];
     seats?: ISeat[];
   }) {
@@ -111,8 +99,6 @@ export class Flight implements IFlight {
     this.arrivalTime = new Date(flight.arrivalTime);
     this.departureAirport = new Airport(flight.departureAirport);
     this.arrivalAirport = new Airport(flight.arrivalAirport);
-    this.price = flight.price;
-    this.flightClass = flight.flightClass;
 
     this.layovers = flight.layovers
       ? flight.layovers.map((layover) => new Layover(layover))

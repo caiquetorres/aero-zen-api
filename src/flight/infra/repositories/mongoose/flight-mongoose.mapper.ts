@@ -33,14 +33,11 @@ export class FlightMongooseMapper {
           name: doc.arrivalAirport.name,
           iataCode: doc.arrivalAirport.iataCode,
         }),
-        price: doc.price,
-        flightClass: doc.flightClass,
         seats: doc.seats.map(
           (seat) =>
             new Seat({
               seatClass: seat.seatClass,
               price: seat.price,
-              status: seat.status,
               seatNumber: seat.seatNumber,
             }),
         ),
@@ -86,14 +83,11 @@ export class FlightMongooseMapper {
           name: domain.arrivalAirport.name,
           iataCode: domain.arrivalAirport.iataCode,
         }),
-        price: domain.price,
-        flightClass: domain.flightClass,
         seats: domain.seats.map(
           (seat) =>
             new SeatDocument({
               seatClass: seat.seatClass,
               price: seat.price,
-              status: seat.status,
               seatNumber: seat.seatNumber,
             }),
         ),

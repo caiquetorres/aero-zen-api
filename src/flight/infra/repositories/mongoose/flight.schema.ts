@@ -1,9 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 
-import { FlightClass } from '../../../domain/enums/flight-class.enum';
 import { SeatClass } from '../../../domain/enums/seat-class.enum';
-import { SeatStatus } from '../../../domain/enums/seat-status.enum';
 
 @Schema()
 export class AirportDocument {
@@ -33,21 +31,16 @@ export class SeatDocument {
   @Prop({ required: true, type: String })
   seatClass: SeatClass;
 
-  @Prop({ required: true, type: String })
-  status: SeatStatus;
-
   @Prop({ required: true, type: Number })
   price: number;
 
   constructor(seat: {
     seatNumber: string;
     seatClass: SeatClass;
-    status: SeatStatus;
     price: number;
   }) {
     this.seatNumber = seat.seatNumber;
     this.seatClass = seat.seatClass;
-    this.status = seat.status;
     this.price = seat.price;
   }
 }
@@ -107,12 +100,6 @@ export class FlightDocument {
   })
   arrivalAirport: AirportDocument;
 
-  @Prop({ required: true, type: Number })
-  price: number;
-
-  @Prop({ required: true, type: String })
-  flightClass: FlightClass;
-
   @Prop({
     required: true,
     ref: SeatDocument.name,
@@ -136,8 +123,6 @@ export class FlightDocument {
     arrivalTime: number | string | Date;
     departureAirport: AirportDocument;
     arrivalAirport: AirportDocument;
-    price: number;
-    flightClass: FlightClass;
     seats: SeatDocument[];
     layovers: LayoverDocument[];
   }) {
@@ -149,8 +134,6 @@ export class FlightDocument {
     this.arrivalTime = new Date(flight.arrivalTime);
     this.departureAirport = flight.departureAirport;
     this.arrivalAirport = flight.arrivalAirport;
-    this.price = flight.price;
-    this.flightClass = flight.flightClass;
     this.seats = flight.seats;
     this.layovers = flight.layovers;
   }
