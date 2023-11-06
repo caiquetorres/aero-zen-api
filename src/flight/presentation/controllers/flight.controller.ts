@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpException,
+  Param,
   Post,
   Query,
 } from '@nestjs/common';
@@ -19,7 +20,8 @@ import { Role } from '../../../user/domain/entities/role';
 import { IUser } from '../../../user/domain/interfaces/user.interface';
 import { CreateFlightCommand } from '../../domain/commands/create-flight.command';
 import { IFlight } from '../../domain/interfaces/flight.interface';
-import { ListFlightsQuery } from '../../domain/queries/list-flights.query';
+import { FindFlightsQuery } from '../../domain/queries/find-flights.query';
+import { FindOneFlightQuery } from '../../domain/queries/find-one-flight.query';
 
 import { AllowFor } from '../../../auth/presentation/decorators/allow-for.decorator';
 import { CurrentUser } from '../../../auth/presentation/decorators/current-user.decorator';
@@ -66,7 +68,28 @@ export class FlightController {
     @Query() pageQuery: PageQuery,
   ): Promise<IPage<FlightPresenter>> {
     return this._queryBus
-      .execute(new ListFlightsQuery({ currentUser, pageQuery }))
+      .execute<FindFlightsQuery, IPage<IFlight>>(
+        new FindFlightsQuery({ currentUser, pageQuery }),
+      )
       .then((page) => new FlightsPagePresenter(page));
+  }
+
+  @ApiOperation({ summary: 'Retrieves a single flight' })
+  @ApiOkResponse({ type: FlightPresenter })
+  @Public()
+  @Get(':id')
+  async listOne(
+    @CurrentUser() currentUser: IUser,
+    @Param('id') flightId: string,
+  ): Promise<FlightPresenter> {
+    return this._queryBus
+      .execute<FindOneFlightQuery, Result<IFlight, HttpException>>(
+        new FindOneFlightQuery({ currentUser, flightId }),
+      )
+      .then((flight) =>
+        flight.isOk()
+          ? new FlightPresenter(flight.value)
+          : Promise.reject(flight.error),
+      );
   }
 }

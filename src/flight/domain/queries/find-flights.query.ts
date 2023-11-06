@@ -1,7 +1,7 @@
 import { IPageQuery } from '../../../core/domain/interfaces/page-query.interface';
 import { IUser } from '../../../user/domain/interfaces/user.interface';
 
-export class ListFlightsQuery {
+export class FindFlightsQuery {
   readonly currentUser: IUser;
 
   readonly pageQuery: IPageQuery;
