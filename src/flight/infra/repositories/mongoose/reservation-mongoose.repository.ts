@@ -2,10 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
-import { IPageQuery } from '../../../../core/domain/interfaces/page-query.interface';
-import { IPage } from '../../../../core/domain/interfaces/page.interface';
-import { IFlight } from '../../../../flight/domain/interfaces/flight.interface';
 import { IUser } from '../../../../user/domain/interfaces/user.interface';
+import { IFlight } from '../../../domain/interfaces/flight.interface';
 import { IReservation } from '../../../domain/interfaces/reservation.interface';
 import { Reservation } from '../../../domain/models/reservation';
 
@@ -43,19 +41,9 @@ export class ReservationMongooseRepository implements ReservationRepository {
     }
   }
 
-  async findReservationsByOwner(
-    owner: IUser,
-    query: IPageQuery,
-  ): Promise<IPage<Reservation>> {
-    const { limit, page } = query;
-    const skip = (page - 1) * limit;
-    const totalCount = await this._model.countDocuments().lean().exec();
-    const hasNextPage = skip + limit < totalCount;
-
-    const bugReports = await this._model
+  async findReservationsByOwner(owner: IUser): Promise<Reservation[]> {
+    const domains = await this._model
       .find({ owner: new Types.ObjectId(owner.id.unwrap()) })
-      .skip(skip)
-      .limit(limit)
       .populate('owner')
       .populate('flight')
       .lean()
@@ -65,22 +53,12 @@ export class ReservationMongooseRepository implements ReservationRepository {
         ),
       );
 
-    return { limit, page, hasNextPage, data: bugReports };
+    return domains;
   }
 
-  async findReservationsByFlight(
-    flight: IFlight,
-    query: IPageQuery,
-  ): Promise<IPage<Reservation>> {
-    const { limit, page } = query;
-    const skip = (page - 1) * limit;
-    const totalCount = await this._model.countDocuments().lean().exec();
-    const hasNextPage = skip + limit < totalCount;
-
-    const bugReports = await this._model
+  async findReservationsByFlight(flight: IFlight): Promise<Reservation[]> {
+    const domains = await this._model
       .find({ flight: new Types.ObjectId(flight.id.unwrap()) })
-      .skip(skip)
-      .limit(limit)
       .populate('owner')
       .populate('flight')
       .lean()
@@ -90,7 +68,7 @@ export class ReservationMongooseRepository implements ReservationRepository {
         ),
       );
 
-    return { limit, page, hasNextPage, data: bugReports };
+    return domains;
   }
 
   async deleteOne(domain: IReservation): Promise<Result<void>> {

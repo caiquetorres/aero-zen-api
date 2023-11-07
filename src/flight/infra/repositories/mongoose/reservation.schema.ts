@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 
-import { FlightDocument } from '../../../../flight/infra/repositories/mongoose/flight.schema';
 import { UserDocument } from '../../../../user/infra/repositories/mongoose/user.document';
+
+import { FlightDocument } from './flight.schema';
 
 @Schema({ collection: 'reservations' })
 export class ReservationDocument {

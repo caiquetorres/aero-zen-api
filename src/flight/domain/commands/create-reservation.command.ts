@@ -1,7 +1,7 @@
-import { IFlight } from '../../../flight/domain/interfaces/flight.interface';
 import { IUser } from '../../../user/domain/interfaces/user.interface';
 
 import { ICreateReservation } from '../interfaces/create-reservation.interface';
+import { IFlight } from '../interfaces/flight.interface';
 
 export class CreateReservationCommand {
   readonly currentUser: IUser;

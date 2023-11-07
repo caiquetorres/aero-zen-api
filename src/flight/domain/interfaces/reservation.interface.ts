@@ -1,5 +1,6 @@
-import { IFlight } from '../../../flight/domain/interfaces/flight.interface';
 import { IUser } from '../../../user/domain/interfaces/user.interface';
+
+import { IFlight } from './flight.interface';
 
 export interface IReservation {
   readonly id: Option<string>;

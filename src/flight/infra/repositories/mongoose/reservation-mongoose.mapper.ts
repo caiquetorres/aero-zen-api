@@ -3,11 +3,11 @@ import { Types } from 'mongoose';
 import { IReservation } from '../../../domain/interfaces/reservation.interface';
 import { Reservation } from '../../../domain/models/reservation';
 
-import { FlightMongooseMapper } from '../../../../flight/infra/repositories/mongoose/flight-mongoose.mapper';
-import { FlightDocument } from '../../../../flight/infra/repositories/mongoose/flight.schema';
 import { UserMongooseMapper } from '../../../../user/infra/repositories/mongoose/user-mongoose.mapper';
 import { UserDocument } from '../../../../user/infra/repositories/mongoose/user.document';
 
+import { FlightMongooseMapper } from './flight-mongoose.mapper';
+import { FlightDocument } from './flight.schema';
 import { ReservationDocument } from './reservation.schema';
 
 export class ReservationMongooseMapper {

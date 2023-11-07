@@ -1,10 +1,10 @@
 import { toOptional } from '../../../core/domain/classes/option';
-import { IFlight } from '../../../flight/domain/interfaces/flight.interface';
-import { Flight } from '../../../flight/domain/models/flight';
 import { User } from '../../../user/domain/entities/user';
 import { IUser } from '../../../user/domain/interfaces/user.interface';
 
+import { IFlight } from '../interfaces/flight.interface';
 import { IReservation } from '../interfaces/reservation.interface';
+import { Flight } from './flight';
 
 export class Reservation implements IReservation {
   readonly id: Option<string>;

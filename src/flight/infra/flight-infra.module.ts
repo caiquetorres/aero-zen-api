@@ -7,6 +7,12 @@ import {
   FlightDocument,
   FlightSchema,
 } from './repositories/mongoose/flight.schema';
+import { ReservationMongooseRepository } from './repositories/mongoose/reservation-mongoose.repository';
+import {
+  ReservationDocument,
+  ReservationSchema,
+} from './repositories/mongoose/reservation.schema';
+import { ReservationRepository } from './repositories/reservation.repository';
 
 @Module({
   imports: [
@@ -15,6 +21,10 @@ import {
         name: FlightDocument.name,
         schema: FlightSchema,
       },
+      {
+        name: ReservationDocument.name,
+        schema: ReservationSchema,
+      },
     ]),
   ],
   providers: [
@@ -22,7 +32,11 @@ import {
       provide: FlightRepository,
       useClass: FlightMongooseRepository,
     },
+    {
+      provide: ReservationRepository,
+      useClass: ReservationMongooseRepository,
+    },
   ],
-  exports: [FlightRepository],
+  exports: [FlightRepository, ReservationRepository],
 })
 export class FlightInfraModule {}
