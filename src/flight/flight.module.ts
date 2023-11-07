@@ -5,6 +5,7 @@ import { FlightInfraModule } from './infra/flight-infra.module';
 
 import { CreateFlightHandler } from './application/handlers/create-flight.handler';
 import { CreateReservationHandler } from './application/handlers/create-reservation.handler';
+import { FindAvailableSeatsHandler } from './application/handlers/find-available-seats.handler';
 import { FindFlightsHandler } from './application/handlers/find-flights.handler';
 import { FindOneFlightHandler } from './application/handlers/find-one-flight.handler';
 
@@ -18,6 +19,7 @@ const commands: Type<ICommandHandler>[] = [
 const queries: Type<IQueryHandler>[] = [
   FindFlightsHandler,
   FindOneFlightHandler,
+  FindAvailableSeatsHandler,
 ];
 
 @Module({

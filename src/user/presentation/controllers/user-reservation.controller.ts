@@ -1,11 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { IReservation } from '../../../flight/domain/interfaces/reservation.interface';
 import { IUser } from '../../domain/interfaces/user.interface';
@@ -16,13 +11,12 @@ import { Public } from '../../../auth/presentation/decorators/public.decorator';
 import { ReservationPresenter } from '../../../flight/presentation/presenters/reservation.presenter';
 
 @ApiTags('users')
-@Controller('users/:userId')
+@Controller('users/me')
 export class UserReservationController {
   constructor(private readonly _queryBus: QueryBus) {}
 
   @ApiOperation({ summary: 'Retrieves all the user reservations' })
   @ApiOkResponse({ type: ReservationPresenter, isArray: true })
-  @ApiParam({ name: 'userId', type: String })
   @Public()
   @Get('reservations')
   async findAllReservations(
