@@ -41,6 +41,15 @@ export class ReservationMongooseRepository implements ReservationRepository {
     }
   }
 
+  async findOneById(id: string): Promise<Option<Reservation>> {
+    return this._model
+      .findById(id)
+      .populate('owner')
+      .populate('flight')
+      .lean()
+      .then((document) => ReservationMongooseMapper.toDomain(document));
+  }
+
   async findReservationsByOwner(owner: IUser): Promise<Reservation[]> {
     const domains = await this._model
       .find({ owner: new Types.ObjectId(owner.id.unwrap()) })

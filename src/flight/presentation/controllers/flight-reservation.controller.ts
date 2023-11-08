@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
-  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -28,6 +27,7 @@ import { CurrentUser } from '../../../auth/presentation/decorators/current-user.
 import { Public } from '../../../auth/presentation/decorators/public.decorator';
 
 import { CreateReservationDto } from '../dtos/create-reservation.dto';
+import { ReservationPresenter } from '../presenters/reservation.presenter';
 import { SeatPresenter } from '../presenters/seat.presenter';
 
 @ApiTags('flights')
@@ -39,20 +39,22 @@ export class FlightReservationController {
   ) {}
 
   @ApiOperation({ summary: 'Reserves a flight seat' })
-  @ApiNoContentResponse()
+  @ApiOkResponse({ type: ReservationPresenter })
   @AllowFor(/.*/)
   @Put('reserve')
   async reserve(
     @CurrentUser() currentUser: IUser,
     @Body() dto: CreateReservationDto,
     @Param('flightId', FlightByIdPipe) flight: IFlight,
-  ): Promise<void> {
+  ): Promise<ReservationPresenter> {
     return this._commandBus
       .execute<CreateReservationCommand, Result<IReservation, HttpException>>(
         new CreateReservationCommand({ currentUser, data: dto, flight }),
       )
       .then((reservation) =>
-        reservation.isOk() ? undefined : Promise.reject(reservation.error),
+        reservation.isOk()
+          ? new ReservationPresenter(reservation.value)
+          : Promise.reject(reservation.error),
       );
   }
 

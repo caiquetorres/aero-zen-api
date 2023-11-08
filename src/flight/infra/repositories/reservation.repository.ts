@@ -6,6 +6,8 @@ import { Reservation } from '../../domain/models/reservation';
 export abstract class ReservationRepository {
   abstract save(reservation: IReservation): Promise<Result<Reservation>>;
 
+  abstract findOneById(id: string): Promise<Option<Reservation>>;
+
   abstract findReservationsByOwner(owner: IUser): Promise<Reservation[]>;
 
   abstract findReservationsByFlight(flight: IFlight): Promise<Reservation[]>;

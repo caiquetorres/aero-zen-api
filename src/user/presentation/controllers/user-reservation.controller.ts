@@ -6,8 +6,8 @@ import { IReservation } from '../../../flight/domain/interfaces/reservation.inte
 import { IUser } from '../../domain/interfaces/user.interface';
 import { FindAllReservationsQuery } from '../../domain/queries/find-all-reservations.query';
 
+import { AllowFor } from '../../../auth/presentation/decorators/allow-for.decorator';
 import { CurrentUser } from '../../../auth/presentation/decorators/current-user.decorator';
-import { Public } from '../../../auth/presentation/decorators/public.decorator';
 import { ReservationPresenter } from '../../../flight/presentation/presenters/reservation.presenter';
 
 @ApiTags('users')
@@ -17,7 +17,7 @@ export class UserReservationController {
 
   @ApiOperation({ summary: 'Retrieves all the user reservations' })
   @ApiOkResponse({ type: ReservationPresenter, isArray: true })
-  @Public()
+  @AllowFor(/.*/)
   @Get('reservations')
   async findAllReservations(
     @CurrentUser() currentUser: IUser,
